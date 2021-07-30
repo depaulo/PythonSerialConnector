@@ -6,7 +6,7 @@ import time
 import re
 import PySimpleGUI as sg
 
-sg.Window(title="Hello World", layout=[[]], margins=(100, 50)).read() 
+sg.Window(title="Hello World,my first app.", layout=[[]], margins=(100, 50)).read() 
 
 global MAX_LOOP_NUM
 global newCmd
