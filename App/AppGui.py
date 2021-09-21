@@ -2,42 +2,50 @@ import os
 import PySimpleGUI as sg
 from PySimpleGUI.PySimpleGUI import Column
 
+#MAIN WINDOW LAYOUT
 
 inputs_layout = [
-    [sg.Text("Hello from PySimpleGUI")],
-    [sg.Button("Start PDP context")],
-    [sg.Button("Show INFO")],
-    [sg.Button("OK")]
+    [sg.Text("PythonSerialConnector-- GTI32 V0.9 --",pad=(0,20))],
+    [sg.Button("Start Communication",size=(20,1))],
+    [sg.Button("Internet Configuration",size=(20,1))],
+    [sg.Button("Show INFO",size=(20,1))],
+    [sg.Text('Custom Commands', size =(20, 1))], 
+    [sg.InputText(key='TextInput',size =(40, 1))],
+    [sg.Button("Input",bind_return_key=True)],
+    [sg.Button("OK",pad=(0,20))]
 ]
 
 output_layout = [
     [sg.Text("Anything printed will display here!")],
-    [sg.Output(size=(60,15), font='Courier 8')]
+    [sg.Output(size=(70,20), font='Courier 10')]
 ]
 
 main_window_layout = [
-    [sg.Column(inputs_layout, element_justification='c'),
+    [sg.Column(inputs_layout, element_justification='l'),
     sg.Column(output_layout, element_justification='c')]
 ]
+
+#SERIAL WINDOW LAYOUT
 
 if os.name == 'nt' :
     serial_selection_layout = [
         [sg.Text('Choose Device Serial Configuration',size=(30, 1), font='Lucida',justification='left')],
-        [sg.Combo(['COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9','COM10','COM11','COM12','COM13','COM14','COM15','COM16','COM17','COM18','COM19','COM20'],size=(10,1), key='cmd_name', default_value='Unselected')],
+        [sg.Combo(['COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9','COM10','COM11','COM12','COM13','COM14','COM15','COM16','COM17','COM18','COM19','COM20'],size=(10,1), key='cmd_name', default_value='COM5')],
         [sg.Combo(['9600','115200'],size=(10,1), key='cmd_speed', default_value='115200')],
         [sg.Button("OK")]
     ]
 else :
-    serial_name_selection_layout = [
+    serial_selection_layout = [
         [sg.Text('Choose Device Serial Configuration',size=(20, 1), font='Lucida',justification='left')],
         [sg.Combo(['/dev/ttyS0','/dev/ttyS1','/dev/ttyS2','/dev/ttyS3','/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2','/dev/ttyUSB3','/dev/ttyACM0','/dev/ttyACM1','/dev/ttyACM2','/dev/ttyACM3'],size=(10,1), key='cmd_name',default_value='Unselected')],
         [sg.Combo(['9600','115200'],size=(10,1), key='cmd_speed', default_value='115200')],
         [sg.Button("OK")]
     ]    
 
+#MAIN PROGRAM, UTILIZADO PARA VERIRIFICAÇÃO DE MODIFICAÇÕES
 
 if __name__ == "__main__":
-    main_window = sg.Window("Serial Communication", main_window_layout)
+    main_window = sg.Window("PythonSerialConnector - Serial Communication -- GTI32 V0.9 -- ", main_window_layout)
     serial_window = sg.Window("Serial Seletion", serial_selection_layout)
     while True:
         s_event, s_values = serial_window.read()
