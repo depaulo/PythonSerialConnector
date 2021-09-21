@@ -1,9 +1,12 @@
+import os
 import PySimpleGUI as sg
 from PySimpleGUI.PySimpleGUI import Column
 
+
 inputs_layout = [
     [sg.Text("Hello from PySimpleGUI")],
-    [sg.Button("Start Serial Communication")],
+    [sg.Button("Start PDP context")],
+    [sg.Button("Show INFO")],
     [sg.Button("OK")]
 ]
 
@@ -17,11 +20,20 @@ main_window_layout = [
     sg.Column(output_layout, element_justification='c')]
 ]
 
-serial_selection_layout = [
-    [sg.Text('Choose Boarding place',size=(20, 1), font='Lucida',justification='left')],
-    [sg.Combo(['New York','Chicago','Washington', 'Colorado','Ohio','San Jose','Fresno','San Fransisco'],default_value='Unselected')],
-    [sg.Button("OK")]
-]
+if os.name == 'nt' :
+    serial_selection_layout = [
+        [sg.Text('Choose Device Serial Configuration',size=(30, 1), font='Lucida',justification='left')],
+        [sg.Combo(['COM1','COM2','COM3','COM4','COM5','COM6','COM7','COM8','COM9','COM10','COM11','COM12','COM13','COM14','COM15','COM16','COM17','COM18','COM19','COM20'],size=(10,1), key='cmd_name', default_value='Unselected')],
+        [sg.Combo(['9600','115200'],size=(10,1), key='cmd_speed', default_value='115200')],
+        [sg.Button("OK")]
+    ]
+else :
+    serial_name_selection_layout = [
+        [sg.Text('Choose Device Serial Configuration',size=(20, 1), font='Lucida',justification='left')],
+        [sg.Combo(['/dev/ttyS0','/dev/ttyS1','/dev/ttyS2','/dev/ttyS3','/dev/ttyUSB0','/dev/ttyUSB1','/dev/ttyUSB2','/dev/ttyUSB3','/dev/ttyACM0','/dev/ttyACM1','/dev/ttyACM2','/dev/ttyACM3'],size=(10,1), key='cmd_name',default_value='Unselected')],
+        [sg.Combo(['9600','115200'],size=(10,1), key='cmd_speed', default_value='115200')],
+        [sg.Button("OK")]
+    ]    
 
 
 if __name__ == "__main__":
@@ -41,4 +53,4 @@ if __name__ == "__main__":
         elif s_event == sg.WIN_CLOSED:
             serial_window.close()
             break
-main_window.close()
+    main_window.close()
