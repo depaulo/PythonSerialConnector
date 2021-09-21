@@ -9,6 +9,7 @@ inputs_layout = [
     [sg.Button("Start Communication",size=(20,1))],
     [sg.Button("Internet Configuration",size=(20,1))],
     [sg.Button("Show INFO",size=(20,1))],
+    [sg.Button("Main Procedure",size=(20,1))],
     [sg.Text('Custom Commands', size =(20, 1))], 
     [sg.InputText(key='TextInput',size =(40, 1))],
     [sg.Button("Input",bind_return_key=True)],
