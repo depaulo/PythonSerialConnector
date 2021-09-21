@@ -3,6 +3,7 @@ import AppGui
 import serial
 import sys
 import re
+import traceback
 
 global MAX_LOOP_NUM
 global newCmd
@@ -76,19 +77,26 @@ if __name__ == "__main__":
             sys.exit(0)
             break
     serial_window.close()
-
+    try:
+        serInstance = serial.Serial(cmdName, cmdSpeed, timeout=1)
+    except Exception as e:
+        tb = traceback.format_exc()
+        AppGui.sg.popup_error_with_traceback(f'PROBLEMS WHILE OPPENING SERIAL COMMUNICATION', e, tb)
     main_window = AppGui.sg.Window("Serial Communication", AppGui.main_window_layout)
-    print("Starting serial communication....")
-    serInstance = serial.Serial(cmdName, cmdSpeed, timeout=1)
-    while True:
-        event, values = main_window.read()
-        AD_INIT(serInstance)
-        if event == "Open PDP context":
-            print("Open PDP context")
-            AD_PDPCFG(serInstance)
-        if event == "INFO":
-            print("INFO")
-            AD_INFO(serInstance)
-        elif event == "OK" or event == AppGui.sg.WIN_CLOSED:
-            break
-    main_window.close()    
+    try:
+        print("Starting serial communication....")
+        while True:
+            event, values = main_window.read()
+            AD_INIT(serInstance)
+            if event == "Open PDP context":
+                print("Open PDP context")
+                AD_PDPCFG(serInstance)
+            if event == "INFO":
+                print("INFO")
+                AD_INFO(serInstance)
+            elif event == "OK" or event == AppGui.sg.WIN_CLOSED:
+                break
+        main_window.close()    
+    except Exception as e:
+        tb = traceback.format_exc()
+        AppGui.sg.popup_error_with_traceback(f'COMUNICATION PROBLENS', e, tb)
