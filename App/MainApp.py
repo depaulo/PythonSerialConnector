@@ -7,60 +7,44 @@ import re
 import traceback
 
 
-global MAX_LOOP_NUM
-global newCmd
-MAX_LOOP_NUM = 10
-
+#Serial Communication Scripts =================================================
 
 def AD_INIT(serInstance) : #Initial configuration for the system
-    AD_CMD = [('ATE0\r'),('AT\r'),('ATI\r'),('AT+CMEE=1')]
-    SUM_OK = 0
+    AD_CMD = [('ATE0\r'),('AT\r'),('ATI\r'),('AT+CMEE=1\r')]
     for atCmdStr in AD_CMD :
-        SUM_OK += sendAT_Cmd(serInstance,atCmdStr)
-    print('SUM_OK='+str(SUM_OK)+'\r')
+        sendAT_Cmd(serInstance,atCmdStr)
 
 
 def AD_PDPCFG(serInstance) : #Internet configuration
     AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","java.claro.com.br","0.0.0.0",0,0\r'),('AT+COPS=0\r'),('AT+COPS?\r')]
-    SUM_OK = 0
     for atCmdStr in AD_CMD :
-        SUM_OK += sendAT_Cmd(serInstance,atCmdStr)     
-    print('SUM_OK='+str(SUM_OK)+'\r')
+        sendAT_Cmd(serInstance,atCmdStr)     
 
 
 def AD_INFO(serInstance) : #Show informations about the system
     AD_CMD = [('AT^SMONI\r'),('AT+CREG?\r'),('AT+COPS?\r')]
-    SUM_OK = 0
     for atCmdStr in AD_CMD :
-        SUM_OK += sendAT_Cmd(serInstance,atCmdStr)
-    print('SUM_OK='+str(SUM_OK)+'\r')
+        sendAT_Cmd(serInstance,atCmdStr)
 
 
 def AD_CUSTOMCMD(serInstance,customCmd) : #Sends a custom Command
-    AD_CMD = [(customCmd+'\r',0)]
-    for atCmdStr,waitForOk in AD_CMD :
-        sendAT_Cmd(serInstance,atCmdStr,waitForOk)
+    AD_CMD = [(customCmd+'\r')]
+    for atCmdStr in AD_CMD :
+        sendAT_Cmd(serInstance,atCmdStr)
 
+#Serial communication ========================================================================
 
-def sendAT_Cmd(serInstance,atCmdStr,waitForOk=1):
+def sendAT_Cmd(serInstance,atCmdStr): #The option without the wait for Ok seems good enough.
     print("Command: %s"%atCmdStr)
     serInstance.write(atCmdStr.encode('utf-8'))  #or define b'string',bytes should be used not str
     line = bytearray()
-    if waitForOk == 1 :
-        while serInstance.readline() :
-            line.extend(serInstance.readline())
-            sleep(1)
-            if (re.search(b'OK',line)):
-                print("Answer: %s"%line.decode('utf-8'))
-                return 1
-        print("Answer: %s"%line.decode('utf-8'))
-        return 0
-    else :
-        while serInstance.readline() :
-            line.extend(serInstance.readline())
-            sleep(1)
-        print("Answer: %s"%line.decode('utf-8'))
-        return 0
+    while serInstance.readline() :
+        line.extend(serInstance.readline())
+        sleep(0.3)
+    print("Answer: %s"%line.decode('utf-8'))
+    return 0
+    #(re.search(b'OK',line))
+
 
 
 if __name__ == "__main__":
