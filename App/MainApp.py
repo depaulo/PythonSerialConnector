@@ -1,64 +1,17 @@
-from pickle import PicklingError
-from PySimpleGUI.PySimpleGUI import OK
-from time import sleep
 import AppGui
 import serial
 import sys
 import re
 import traceback
 
-testSelection = 2
+#Function for unpacking the Command List =================================================
 
-if testSelection == 1 :
-    #Serial Communication Scripts - PING =================================================
-
-    def AD_PDPCFG(serInstance) : #Internet configuration
-        AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SXRAT=12,7,0\r'),('AT+COPS=0\r'),('AT+COPS?\r')]#('AT+COPS=1,2,72405,7\r')
-        for atCmdStr in AD_CMD :
-            sendAT_Cmd(serInstance,atCmdStr)   
-
-    def AD_MAIN(serInstance) : #Show informations about the system
-        AD_CMD = [('AT+CGATT=1\r'),('AT^SICA=1,1\r'),('AT+CGPADDR=1\r'),('AT^SISX=PING,1,"8.8.8.8",5,5000\r')]
-        for atCmdStr in AD_CMD :
-            sendAT_Cmd(serInstance,atCmdStr)
-
-
-elif testSelection == 2 :
-    #Serial Communication Scripts - TRANSPARENT TCP SOCKET  =================================================
-
-    def AD_PDPCFG(serInstance) : #Internet configuration
-        AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SISS=0,srvtype,socket\r'),('AT^SISS=0,conid,1\r'),('AT^SISS=0,alphabet,1\r'),('at^siss=0,address,"sockudp://123.456.789.000:12345"\r'),('AT+COPS=0\r'),('AT+COPS?\r')]#('AT+COPS=1,2,72405,7\r')
-        for atCmdStr in AD_CMD :
-            sendAT_Cmd(serInstance,atCmdStr)     
-
-
-    def AD_MAIN(serInstance) : #Show informations about the system
-        AD_CMD = [('AT+CGPADDR=1\r'),('AT^SICA=1,1\r'),('AT^SISO=0\r')]
-        for atCmdStr in AD_CMD :
-            sendAT_Cmd(serInstance,atCmdStr)
-
-
-#Serial Communication Scripts - COMMON =================================================
-
-
-def AD_INIT(serInstance) : #Initial configuration for the system
-    AD_CMD = [('ATE0\r'),('AT\r'),('ATI\r'),('AT+CMEE=2\r'),('AT+CREG=2\r')]
-    for atCmdStr in AD_CMD :
-        sendAT_Cmd(serInstance,atCmdStr)  
-
-
-def AD_INFO(serInstance) : #Show informations about the system
-    AD_CMD = [('AT+CGDCONT?\r'),('AT^SXRAT?\r'),('AT^SMONI\r'),('AT+CREG?\r'),('AT+COPS?\r')]
+def AD_CMDLIST(Message,serInstance,AD_CMD) : #Show informations about the system
+    print(Message)
     for atCmdStr in AD_CMD :
         sendAT_Cmd(serInstance,atCmdStr)
 
-
-def AD_CUSTOMCMD(serInstance,customCmd) : #Sends a custom Command
-    AD_CMD = [(customCmd+'\r')]
-    for atCmdStr in AD_CMD :
-        sendAT_Cmd(serInstance,atCmdStr)
-
-#Serial communication ========================================================================
+#Function for sending the AT Command ========================================================================
 
 def sendAT_Cmd(serInstance,atCmdStr): #The option without the wait for Ok seems good enough.
     print("Command: %s"%atCmdStr)
@@ -66,11 +19,9 @@ def sendAT_Cmd(serInstance,atCmdStr): #The option without the wait for Ok seems 
     line = bytearray()
     while serInstance.readline() :
         line.extend(serInstance.readline())
-        sleep(0.3)
     print("Answer: %s"%line.decode('utf-8'))
     return 0
     #(re.search(b'OK',line))
-
 
 
 if __name__ == "__main__":
@@ -97,21 +48,36 @@ if __name__ == "__main__":
         print("Connection OK!!!!")
         while True:
             event, values = main_window.read()
-            if event == "Start Communication":
-                print("Starting Serial Communication")
-                AD_INIT(serInstance) 
-            elif event == "Internet Configuration":
-                print("Configuring the internet")
-                AD_PDPCFG(serInstance) 
-            elif event == "Show INFO":
-                print("Showing Modem Info")
-                AD_INFO(serInstance)
-            elif event == "Main Procedure":
-                print("Main Procedure...")
-                AD_MAIN(serInstance)
-            elif event == "Input":
-                print("Custom Command")
-                AD_CUSTOMCMD(serInstance,str(values['TextInput']))
+            if event == "ComStartPing" :
+                AD_CMD = [('ATE0\r'),('AT\r'),('ATI\r'),('AT+CMEE=2\r'),('AT+CREG=2\r')]
+                AD_CMDLIST("Starting Serial Communication",serInstance,AD_CMD)
+            elif event == "NetCfgPing" :
+                AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SXRAT=12,7,0\r'),('AT+COPS=0\r'),('AT+COPS?\r')]#('AT+COPS=1,2,72405,7\r')
+                AD_CMDLIST("Configuring the internet",serInstance,AD_CMD)
+            elif event == "InfoShowPing" :
+                AD_CMD = [('AT+CGDCONT?\r'),('AT^SXRAT?\r'),('AT^SMONI\r'),('AT+CREG?\r'),('AT+COPS?\r')]
+                AD_CMDLIST("Showing Modem Info",serInstance,AD_CMD)
+            elif event == "MainProcPing":
+                AD_CMD = [('AT+CGATT=1\r'),('AT^SICA=1,1\r'),('AT+CGPADDR=1\r'),('AT^SISX=PING,1,"8.8.8.8",5,5000\r')]
+                AD_CMDLIST("Main Procedure...",serInstance,AD_CMD)
+            elif event == "ButtonPing":
+                AD_CMD = [(str(values['TextInputPing'])+'\r')]
+                AD_CMDLIST("Custom Command",serInstance,AD_CMD)
+            elif event == "ComStartTrans" :
+                AD_CMD = [('ATE0\r'),('AT\r'),('ATI\r'),('AT+CMEE=2\r'),('AT+CREG=2\r')]
+                AD_CMDLIST("Starting Serial Communication",serInstance,AD_CMD)
+            elif event == "NetCfgTrans":
+                AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SISS=0,srvtype,socket\r'),('AT^SISS=0,conid,1\r'),('AT^SISS=0,alphabet,1\r'),('at^siss=0,address,"sockudp://123.456.789.000:12345"\r'),('AT+COPS=0\r'),('AT+COPS?\r')]#('AT+COPS=1,2,72405,7\r')
+                AD_CMDLIST("Configuring the internet",serInstance,AD_CMD)
+            elif event == "InfoShowTrans" :
+                AD_CMD = [('AT+CGDCONT?\r'),('AT^SXRAT?\r'),('AT^SMONI\r'),('AT+CREG?\r'),('AT+COPS?\r')]
+                AD_CMDLIST("Showing Modem Info",serInstance,AD_CMD)
+            elif event == "MainProcTrans":
+                AD_CMD = [('AT+CGPADDR=1\r'),('AT^SICA=1,1\r'),('AT^SISO=0\r')]
+                AD_CMDLIST("Main Procedure...",serInstance,AD_CMD)
+            elif event == "ButtonTrans":
+                AD_CMD = [(str(values['TextInputTrans'])+'\r')]
+                AD_CMDLIST("Custom Command",serInstance,AD_CMD)
             elif event == "OK" or event == AppGui.sg.WIN_CLOSED:
                 break
         main_window.close()

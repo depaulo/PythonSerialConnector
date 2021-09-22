@@ -1,19 +1,29 @@
 import os
 import PySimpleGUI as sg
-from PySimpleGUI.PySimpleGUI import Column
 
 #MAIN WINDOW LAYOUT
 
-inputs_layout = [
-    [sg.Text("PythonSerialConnector-- GTI32 V0.9 --",pad=(0,20))],
-    [sg.Button("Start Communication",size=(20,1))],
-    [sg.Button("Internet Configuration",size=(20,1))],
-    [sg.Button("Show INFO",size=(20,1))],
-    [sg.Button("Main Procedure",size=(20,1))],
+
+inputs_Tab_Ping = [
+    [sg.Text("PythonSerialConnector -- PING --",pad=(0,20))],
+    [sg.Button("Start Communication",key='ComStartPing',size=(20,1))],
+    [sg.Button("Internet Configuration",key='NetCfgPing',size=(20,1))],
+    [sg.Button("Show INFO",key='InfoShowPing',size=(20,1))],
+    [sg.Button("Main Procedure",key='MainProcPing',size=(20,1))],
     [sg.Text('Custom Commands', size =(20, 1))], 
-    [sg.InputText(key='TextInput',size =(40, 1))],
-    [sg.Button("Input",bind_return_key=True)],
-    [sg.Button("OK",pad=(0,20))]
+    [sg.InputText(key='TextInputPing',size =(40, 1))],
+    [sg.Button("Input",key='ButtonPing',bind_return_key=True)]
+]
+
+inputs_Tab_Transp = [
+    [sg.Text("PythonSerialConnector -- TRANSPARENT TCP SOCKET --",pad=(0,20))],
+    [sg.Button("Start Communication",key='ComStartTrans',size=(20,1))],
+    [sg.Button("Internet Configuration",key='NetCfgTrans',size=(20,1))],
+    [sg.Button("Show INFO",key='InfoShowTrans',size=(20,1))],
+    [sg.Button("Main Procedure",key='MainProcTrans',size=(20,1))],
+    [sg.Text('Custom Commands', size =(20, 1))], 
+    [sg.InputText(key='TextInputTrans',size =(40, 1))],
+    [sg.Button("Input",key='ButtonTrans',bind_return_key=True)]
 ]
 
 output_layout = [
@@ -22,8 +32,8 @@ output_layout = [
 ]
 
 main_window_layout = [
-    [sg.Column(inputs_layout, element_justification='l'),
-    sg.Column(output_layout, element_justification='c')]
+    [sg.Column([[sg.TabGroup([[sg.Tab('PING',inputs_Tab_Ping),sg.Tab('TRANSP SERIAL',inputs_Tab_Transp)]])]]),sg.Column(output_layout, element_justification='c')],
+    [sg.Button("OK",pad=(0,20))]
 ]
 
 #SERIAL WINDOW LAYOUT
