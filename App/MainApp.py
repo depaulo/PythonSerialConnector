@@ -52,7 +52,7 @@ if __name__ == "__main__":
                 AD_CMD = [('ATE0\r'),('AT\r'),('ATI\r'),('AT+CMEE=2\r'),('AT+CREG=2\r')]
                 AD_CMDLIST("Starting Serial Communication",serInstance,AD_CMD)
             elif event == "NetCfgPing" :
-                AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SXRAT=12,7,0\r'),('AT+COPS=0\r'),('AT+COPS?\r')]#('AT+COPS=1,2,72405,7\r')
+                AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SXRAT=12,7,0\r'),('AT+COPS=0\r'),('AT+COPS?\r')]
                 AD_CMDLIST("Configuring the internet",serInstance,AD_CMD)
             elif event == "InfoShowPing" :
                 AD_CMD = [('AT+CGDCONT?\r'),('AT^SXRAT?\r'),('AT^SMONI\r'),('AT+CREG?\r'),('AT+COPS?\r')]
@@ -67,13 +67,13 @@ if __name__ == "__main__":
                 AD_CMD = [('ATE0\r'),('AT\r'),('ATI\r'),('AT+CMEE=2\r'),('AT+CREG=2\r')]
                 AD_CMDLIST("Starting Serial Communication",serInstance,AD_CMD)
             elif event == "NetCfgTrans":
-                AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SISS=0,srvtype,socket\r'),('AT^SISS=0,conid,1\r'),('AT^SISS=0,alphabet,1\r'),('at^siss=0,address,"sockudp://123.456.789.000:12345"\r'),('AT+COPS=0\r'),('AT+COPS?\r')]#('AT+COPS=1,2,72405,7\r')
+                AD_CMD = [('AT+COPS=2\r'),('AT+CGDCONT=1,"IP","cat-m1.claro.com.br","0.0.0.0",0,0\r'),('AT^SXRAT=12,7,0\r'),('AT+COPS=0\r')]
                 AD_CMDLIST("Configuring the internet",serInstance,AD_CMD)
             elif event == "InfoShowTrans" :
                 AD_CMD = [('AT+CGDCONT?\r'),('AT^SXRAT?\r'),('AT^SMONI\r'),('AT+CREG?\r'),('AT+COPS?\r')]
                 AD_CMDLIST("Showing Modem Info",serInstance,AD_CMD)
             elif event == "MainProcTrans":
-                AD_CMD = [('AT+CGPADDR=1\r'),('AT^SICA=1,1\r'),('AT^SISO=0\r')]
+                AD_CMD = [('AT+CGATT=1\r'),('AT^SICA=1,1\r'),('AT+CGPADDR=1\r'),('AT^SISS=1,srvType,"Transparent"\r'),('AT^SISS=1,"conId","1"\r'),('at^siss=1,address,"socktcp://prd.axon.tech.v2com.mobi:11135;etx=26"\r'),('AT^SISO=1\r'),('AT^SIST=1\r')]
                 AD_CMDLIST("Main Procedure...",serInstance,AD_CMD)
             elif event == "ButtonTrans":
                 AD_CMD = [(str(values['TextInputTrans'])+'\r')]
